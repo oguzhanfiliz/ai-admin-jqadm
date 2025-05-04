@@ -172,35 +172,26 @@ $after = is_array( $after ) ? $after['_'] ?? reset( $after ) : $after;
 				<?php foreach( $navlist as $nav => $navitem ) : ?>
 					<?php if( is_array( $navitem ) ) : $nav = $navitem['_'] ?? current( $nav ) ?>
 
-						<li class="treeview menuitem-<?= $enc->attr( $nav ) ?> <?= $nav === $before ? 'before' : '' ?> <?= in_array( $resource, $navitem ) !== false ? 'active' : '' ?> <?= $nav === $after ? 'after' : '' ?>">
-							<span class="item-group">
+						<li class="dropdown menuitem-<?= $enc->attr( $nav ) ?> <?= $nav === $before ? 'before' : '' ?> <?= in_array( $resource, $navitem ) !== false ? 'active' : '' ?> <?= $nav === $after ? 'after' : '' ?>">
+							<span class="item-group" onclick="this.nextElementSibling.classList.toggle('show')">
 								<i class="icon"></i>
 								<span class="title"><?= $enc->attr( $this->translate( 'admin', $nav ) ) ?></span>
 							</span>
-							<div class="tree-menu-wrapper">
-								<div class="menu-header">
-									<a href="#"><?= $enc->html( $this->translate( 'admin', $nav ) ) ?></a>
-									<span class="close"></span>
-								</div>
-								<ul class="tree-menu">
-
-								<?php foreach( map( $navitem )->remove( '_' )->ksort() as $subresource ) : ?>
-										<?php if( $this->access( $this->config( 'admin/jqadm/resource/' . $subresource . '/groups', [] ) ) ) : ?>
-											<?php $key = $this->config( 'admin/jqadm/resource/' . $subresource . '/key', '' ) ?>
-
-											<li class="menuitem-<?= str_replace( '/', '-', $subresource ) ?> <?= $subresource === $resource ? 'active' : '' ?>">
-												<a class="item-group" href="<?= $enc->attr( $this->link( 'admin/jqadm/url/search', ['resource' => $subresource] + $params ) ) ?>"
-													title="<?= $enc->attr( sprintf( $this->translate( 'admin', '%1$s (Ctrl+Alt+%2$s)' ), $this->translate( 'admin', $subresource ), $key ) ) ?>"
-													data-ctrlkey="<?= $enc->attr( strtolower( $key ) ) ?>">
-													<i class="icon"></i>
-													<span class="name"><?= $enc->html( $this->translate( 'admin', $subresource ) ) ?></span>
-												</a>
-											</li>
-
-										<?php endif ?>
-									<?php endforeach ?>
-								</ul>
-							</div>
+							<ul class="dropdown-menu">
+							<?php foreach( map( $navitem )->remove( '_' )->ksort() as $subresource ) : ?>
+								<?php if( $this->access( $this->config( 'admin/jqadm/resource/' . $subresource . '/groups', [] ) ) ) : ?>
+									<?php $key = $this->config( 'admin/jqadm/resource/' . $subresource . '/key', '' ) ?>
+									<li class="menuitem-<?= str_replace( '/', '-', $subresource ) ?> <?= $subresource === $resource ? 'active' : '' ?>">
+										<a class="item-group" href="<?= $enc->attr( $this->link( 'admin/jqadm/url/search', ['resource' => $subresource] + $params ) ) ?>"
+											title="<?= $enc->attr( sprintf( $this->translate( 'admin', '%1$s (Ctrl+Alt+%2$s)' ), $this->translate( 'admin', $subresource ), $key ) ) ?>"
+											data-ctrlkey="<?= $enc->attr( strtolower( $key ) ) ?>">
+											<i class="icon"></i>
+											<span class="name"><?= $enc->html( $this->translate( 'admin', $subresource ) ) ?></span>
+										</a>
+									</li>
+								<?php endif ?>
+							<?php endforeach ?>
+							</ul>
 						</li>
 
 					<?php else : ?>
@@ -244,6 +235,17 @@ $after = is_array( $after ) ? $after['_'] ?? reset( $after ) : $after;
 
 				<?php endif ?>
 
+				<li class="dropdown menuitem-setup">
+					<span class="item-group" onclick="this.nextElementSibling.classList.toggle('show')">
+						<i class="icon"></i>
+						<span class="title">Kurulum</span>
+					</span>
+					<ul class="dropdown-menu">
+						<li><a href="/admin/default/jqadm/search/service">Hizmetler</a></li>
+						<li><a href="/admin/default/jqadm/search/plugin">Eklentiler</a></li>
+					</ul>
+				</li>
+
 				<li class="none"></li>
 			</ul>
 
@@ -269,3 +271,13 @@ $after = is_array( $after ) ? $after['_'] ?? reset( $after ) : $after;
 	<?= $this->partial( $this->config( 'admin/jqadm/partial/problem', 'problem' ) ) ?>
 
 </div>
+
+<style>
+	.dropdown-menu { display: none; position: absolute; background: #fff; z-index: 1000; min-width: 160px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+	.dropdown-menu.show { display: block; }
+	.dropdown.menuitem-setup { position: relative; }
+	.sidebar-menu .dropdown-menu { width: 100% !important; }
+	.aimeos .sidebar-menu>li { width: 100% !important; }
+	.sidebar-menu .dropdown-menu { background: linear-gradient(180deg, var(--bs-menu-bg, #30a0e0) 2.5rem, var(--bs-menu-alt-bg, #00b0a0) 100%);
+        background-attachment: fixed;}
+</style>

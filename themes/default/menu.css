@@ -619,3 +619,12 @@ body:not(.dark) .aimeos .main-sidebar .sidebar-menu>li:hover:not(.none) {
 		margin-right: 0;
 	}
 }
+.sidebar-menu .dropdown-menu {
+	width: 100%;
+}
+.sidebar-menu .dropdown-menu .dropdown-item {
+	padding: 0.5rem 1rem;
+}
+.sidebar-menu .dropdown-menu .dropdown-item:hover {
+	background-color: #f0f0f0;
+}
